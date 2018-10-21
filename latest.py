@@ -1,6 +1,7 @@
 import io
 import os
 import sys,json
+from urllib import request
 import googlemaps
 from PIL import Image
 from PIL.ExifTags import TAGS, GPSTAGS
@@ -21,9 +22,11 @@ class vis:
 		# Performs label detection on the image file
 		response = client.label_detection(image=image)
 		labels = response.label_annotations
+		print("label\t\t:\tConfidense")
 		for label in labels :
-			print(label.description,end="  :\t")
-			print(label.score*100)
+			if(label.description=="wildfire" or  label.description=='forest' or label.description=='heat' or label.description=='tree'):
+				print(label.description,end="\t\t:\t")
+				print(label.score*100,"%")
 		
 		
 		
@@ -81,18 +84,25 @@ class vis:
 				lon *= -1
 
 			self.lat,self.lng = lat, lon
+		if not (self.lat) : exit(0)
 		print("latitude and longitude : ",self.lat,self.lng)
 		gmaps = googlemaps.Client(key="AIzaSyBhv0RIepH06GMZBJ3EAjci363o5tM-phg")
 
 		address_list = gmaps.reverse_geocode((self.lat,self. lng))
 		with open('/root/nasa/geo.json', 'w') as outfile:
 			json.dump(address_list, outfile)
-		print("Address : ",address_list[0]["formatted_address"])
-
-o=vis("/home/rahul/Downloads/w.jpg")
-image = Image.open("/home/rahul/Downloads/w.jpg")
+		a=address_list[0]["formatted_address"]
+		print("Address : ",a[6:])
+		
+		
+f = open('1.jpg', 'wb')
+f.write(request.urlopen("https://s3.ap-south-1.amazonaws.com/kumarahul/w.jpg").read())
+f.close()
+o=vis("1.jpg")
+image = Image.open("1.jpg")
 
 exif_data=o.get_exif_data(image)
 o.get_lat_lon(exif_data)
+
  
 
