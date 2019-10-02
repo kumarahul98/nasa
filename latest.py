@@ -86,7 +86,7 @@ class vis:
 			self.lat,self.lng = lat, lon
 		if not (self.lat) : exit(0)
 		print("latitude and longitude : ",self.lat,self.lng)
-		gmaps = googlemaps.Client(key="AIzaSyBhv0RIepH06GMZBJ3EAjci363o5tM-phg")
+		gmaps = googlemaps.Client(key="YOUR API_KEY")
 
 		address_list = gmaps.reverse_geocode((self.lat,self. lng))
 		with open('/root/nasa/geo.json', 'w') as outfile:
